@@ -1,9 +1,9 @@
 package dockerCommands
 
 import (
-	"github.com/oyishyi/oyishyi-docker/cgroups"
-	"github.com/oyishyi/oyishyi-docker/cgroups/subsystems"
-	"github.com/oyishyi/oyishyi-docker/container"
+	"github.com/oyishyi/docker/cgroups"
+	"github.com/oyishyi/docker/cgroups/subsystems"
+	"github.com/oyishyi/docker/container"
 	"github.com/sirupsen/logrus"
 	"os"
 	"strings"

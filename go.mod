@@ -1,4 +1,4 @@
-module github.com/oyishyi/oyishyi-docker
+module github.com/oyishyi/docker
 
 go 1.16
 

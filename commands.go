@@ -2,9 +2,9 @@ package main
 
 import (
 	"errors"
-	"github.com/oyishyi/oyishyi-docker/cgroups/subsystems"
-	"github.com/oyishyi/oyishyi-docker/container"
-	"github.com/oyishyi/oyishyi-docker/dockerCommands"
+	"github.com/oyishyi/docker/cgroups/subsystems"
+	"github.com/oyishyi/docker/container"
+	"github.com/oyishyi/docker/dockerCommands"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )
