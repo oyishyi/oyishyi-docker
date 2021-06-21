@@ -10,10 +10,10 @@ import (
 )
 
 // This is the function what `docker run` will call
-func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig) {
+func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig, volume string) {
 
 	// this is "docker init <containerCmd>"
-	initProcess, writePipe := container.NewProcess(tty)
+	initProcess, writePipe := container.NewProcess(tty, volume)
 
 	// start the init process
 	if err := initProcess.Start(); err != nil{
@@ -42,7 +42,7 @@ func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig) {
 
 	imagesRootURL := "./images/"
 	mntURL := "./mnt/"
-	container.DeleteWorkspace(imagesRootURL, mntURL)
+	container.DeleteWorkspace(imagesRootURL, mntURL, volume)
 
 	os.Exit(-1)
 }

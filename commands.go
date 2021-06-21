@@ -29,6 +29,7 @@ var runCommand = cli.Command{
 			Name:  "it",
 			Usage: "open an interactive tty(pseudo terminal)",
 		},
+		// resource limit config
 		&cli.StringFlag{
 			Name: "m",
 			Usage: "limit the memory",
@@ -38,6 +39,11 @@ var runCommand = cli.Command{
 		},&cli.StringFlag{
 			Name: "cpushare",
 			Usage: "limit the cpu share",
+		},
+		// volume
+		&cli.StringFlag{
+			Name: "v",
+			Usage: "generate volume",
 		},
 	},
 	Action: func(context *cli.Context) error {
@@ -61,10 +67,25 @@ var runCommand = cli.Command{
 			CPUShare:    context.String("cpushare"),
 			CPUAmount:   context.String("cpu"),
 		}
-		dockerCommands.Run(tty, containerCmd, &resourceConfig)
+		// get the volume config
+		volume := context.String("v")
+		dockerCommands.Run(tty, containerCmd, &resourceConfig, volume)
 
 		return nil
 	},
 }
 
+var commitCommand = cli.Command{
+	Name: "commit",
+	Usage: "commit the container into image",
+	Action: func(context *cli.Context) error {
+		args := context.Args()
+		if args.Len() == 0 {
+			return errors.New("Commit what?")
+		}
+		imageName := args.Get(0)
+		dockerCommands.CommitContainer(imageName)
+		return nil
+	},
+}
 
