@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/oyishyi/docker/cgroups/subsystems"
 	"github.com/oyishyi/docker/container"
 	"github.com/oyishyi/docker/dockerCommands"
@@ -29,6 +30,11 @@ var runCommand = cli.Command{
 			Name:  "it",
 			Usage: "open an interactive tty(pseudo terminal)",
 		},
+		// detach
+		&cli.BoolFlag{
+			Name: "d",
+			Usage: "detach the container process",
+		},
 		// resource limit config
 		&cli.StringFlag{
 			Name: "m",
@@ -45,6 +51,11 @@ var runCommand = cli.Command{
 			Name: "v",
 			Usage: "generate volume",
 		},
+		// name
+		&cli.StringFlag{
+			Name: "name",
+			Usage: "container name",
+		},
 	},
 	Action: func(context *cli.Context) error {
 		args := context.Args()
@@ -58,8 +69,14 @@ var runCommand = cli.Command{
 			containerCmd[index] = cmd
 		}
 
-		// check whether type `-it`
+		// check whether open a pseudo terminal
 		tty := context.Bool("it") // presudo terminal
+		// check whether detach the process
+		detach := context.Bool("d")
+
+		if tty && detach {
+			return fmt.Errorf("-it & -d cannot appear together")
+		}
 
 		// get the resource config
 		resourceConfig := subsystems.ResourceConfig{
@@ -69,7 +86,9 @@ var runCommand = cli.Command{
 		}
 		// get the volume config
 		volume := context.String("v")
-		dockerCommands.Run(tty, containerCmd, &resourceConfig, volume)
+		// get the container name
+		name := context.String("name")
+		dockerCommands.Run(tty, containerCmd, &resourceConfig, volume, name)
 
 		return nil
 	},
@@ -89,3 +108,11 @@ var commitCommand = cli.Command{
 	},
 }
 
+var psCommand = cli.Command{
+	Name: "ps",
+	Usage: "list all containers",
+	Action: func(context *cli.Context) error {
+		dockerCommands.ListContainers()
+		return nil
+	},
+}

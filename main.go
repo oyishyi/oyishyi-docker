@@ -13,6 +13,7 @@ func main() {
 			&initCommand,
 			&runCommand,
 			&commitCommand,
+			&psCommand,
 		},
 	}
 
