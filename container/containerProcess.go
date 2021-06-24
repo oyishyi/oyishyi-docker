@@ -10,7 +10,7 @@ import (
 	"syscall"
 )
 
-func NewProcess(tty bool, volume string) (*exec.Cmd, *os.File) {
+func NewProcess(tty bool, volume string, containerName string) (*exec.Cmd, *os.File) {
 
 	readPipe, writePipe, err := os.Pipe()
 
@@ -31,13 +31,29 @@ func NewProcess(tty bool, volume string) (*exec.Cmd, *os.File) {
 	// this is what presudo terminal means
 	// link the container's stdio to os
 	if tty {
+		// if tty
+		// attach to stdio
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
+	} else {
+		// if detach
+		// generate log file
+		dirPath := fmt.Sprintf(DefaultInfoLocation, containerName)
+		if err:= os.MkdirAll(dirPath, 0622); err != nil {
+			logrus.Errorf("mkdir %s fails %v", dirPath, err)
+			return nil, nil
+		}
+		filePath := dirPath + ContainerLogName
+		file, err := os.Create(filePath)
+		if err != nil {
+			logrus.Errorf("create file %s fails: %v", filePath, err)
+			return nil, nil
+		}
+		cmd.Stdout = file
 	}
 
 	cmd.ExtraFiles = []*os.File{readPipe}
-
 	imagesRootURL := "./images/"
 	mntURL := "./mnt/"
 	newWorkspace(imagesRootURL, mntURL, volume)

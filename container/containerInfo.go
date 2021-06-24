@@ -15,4 +15,5 @@ var (
 	Exit string = "exited"
 	DefaultInfoLocation = "/var/run/oyishyi-docker/%s/"
 	ConfigName = "config.json"
+	ContainerLogName = "container.log"
 )

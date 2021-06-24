@@ -116,3 +116,18 @@ var psCommand = cli.Command{
 		return nil
 	},
 }
+
+var logCommand = cli.Command{
+	Name: "logs",
+	Usage: "print logs of the container",
+	Action: func(context *cli.Context) error {
+		args := context.Args()
+		if args.Len() < 1 {
+			return errors.New("log what?")
+		}
+
+		containerName := args.Get(0)
+		dockerCommands.LogContainer(containerName)
+		return nil
+	},
+}

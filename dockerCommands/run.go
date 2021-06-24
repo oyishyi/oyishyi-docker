@@ -18,7 +18,7 @@ import (
 func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig, volume string, containerName string) {
 
 	// this is "docker init <containerCmd>"
-	initProcess, writePipe := container.NewProcess(tty, volume)
+	initProcess, writePipe := container.NewProcess(tty, volume, containerName)
 	if initProcess == nil {
 		logrus.Error("create init process fails")
 	}
@@ -51,6 +51,7 @@ func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig, volume
 	sendInitCommand(containerCmd, writePipe)
 
 	if tty {
+		// if pseudo terminal
 		if err := initProcess.Wait(); err != nil {
 			logrus.Error(err)
 		}
