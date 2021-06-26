@@ -60,15 +60,23 @@ var runCommand = cli.Command{
 	Action: func(context *cli.Context) error {
 		args := context.Args()
 		if args.Len() == 0 {
-			logrus.Error("Run what?")
+			logrus.Error("Run what image?")
+			return nil
+		}
+		if args.Len() == 1 {
+			logrus.Error("Run what command?")
 			return nil
 		}
 
+		// get image name
+		imageName := args.Get(0)
+
 		// transfer from cli.Args to []string
-		containerCmd := make([]string, args.Len()) // command
-		for index, cmd := range args.Slice() {
+		containerCmd := make([]string, args.Len()-1) // command
+		for index, cmd := range args.Slice()[1:] {
 			containerCmd[index] = cmd
 		}
+
 
 		// check whether open a pseudo terminal
 		tty := context.Bool("it") // presudo terminal
@@ -88,8 +96,8 @@ var runCommand = cli.Command{
 		// get the volume config
 		volume := context.String("v")
 		// get the container name
-		name := context.String("name")
-		dockerCommands.Run(tty, containerCmd, &resourceConfig, volume, name)
+		containerName := context.String("name")
+		dockerCommands.Run(tty, containerCmd, &resourceConfig, volume, containerName, imageName)
 
 		return nil
 	},
@@ -100,12 +108,13 @@ var commitCommand = cli.Command{
 	Usage: "commit the container into image",
 	Action: func(context *cli.Context) error {
 		args := context.Args()
-		if args.Len() == 0 {
-			logrus.Error("Commit what?")
+		if args.Len() < 2 {
+			logrus.Error("missing container name and image name.")
 			return nil
 		}
-		imageName := args.Get(0)
-		dockerCommands.CommitContainer(imageName)
+		containerName := args.Get(0)
+		imageName := args.Get(1)
+		dockerCommands.CommitContainer(containerName, imageName)
 		return nil
 	},
 }

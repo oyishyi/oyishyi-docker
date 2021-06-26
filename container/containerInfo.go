@@ -13,15 +13,16 @@ type ContainerInfo struct {
 	Command     string `json:"command"`
 	CreatedTime string `json:"created_time"`
 	Status      string `json:"status"`
+	Volume      string `json:"volume"`
 }
 
 var (
-	RUNNING string = "running"
-	STOP string = "stopped"
-	Exit string = "exited"
-	DefaultInfoLocation = "/var/run/oyishyi-docker/%s/"
-	ConfigName = "config.json"
-	ContainerLogName = "container.log"
+	RUNNING             string = "running"
+	STOP                string = "stopped"
+	Exit                string = "exited"
+	DefaultInfoLocation        = "/var/run/oyishyi-docker/%s/"
+	ConfigName                 = "config.json"
+	ContainerLogName           = "container.log"
 )
 
 func GetContainerInfoByName(containerName string) (*ContainerInfo, error) {

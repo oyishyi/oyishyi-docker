@@ -34,7 +34,7 @@ func (cm CgroupManager) Set(res *subsystems.ResourceConfig) error {
 func (cm *CgroupManager) AddProcess(pid int) error {
 	for _, subsystem := range subsystems.SubsystemsInstance {
 		if err := subsystem.AddProcess(cm.Path, pid); err != nil {
-			logrus.Warn("app process fail: %v", err)
+			logrus.Warn("add process fail: %v", err)
 		}
 	}
 	return nil

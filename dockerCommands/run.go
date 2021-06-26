@@ -15,21 +15,21 @@ import (
 )
 
 // This is the function what `docker run` will call
-func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig, volume string, containerName string) {
+func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig, volume string, containerName string, imageName string) {
 
 	// this is "docker init <containerCmd>"
-	initProcess, writePipe := container.NewProcess(tty, volume, containerName)
+	initProcess, writePipe := container.NewProcess(tty, volume, containerName, imageName)
 	if initProcess == nil {
 		logrus.Error("create init process fails")
 	}
 
 	// start the init process
-	if err := initProcess.Start(); err != nil{
+	if err := initProcess.Start(); err != nil {
 		logrus.Error(err)
 	}
 
 	// record container info
-	containerName, err := recordContainerInfo(initProcess.Process.Pid, containerCmd, containerName)
+	containerName, err := recordContainerInfo(initProcess.Process.Pid, containerCmd, containerName, volume)
 	if err != nil {
 		logrus.Errorf("record container %s fails: %v", containerName, err)
 		return
@@ -55,10 +55,8 @@ func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig, volume
 		if err := initProcess.Wait(); err != nil {
 			logrus.Error(err)
 		}
-		imagesRootURL := "./images/"
-		mntURL := "./mnt/"
 		deleteContainerInfo(containerName)
-		container.DeleteWorkspace(imagesRootURL, mntURL, volume)
+		container.DeleteWorkspace(volume, containerName)
 	}
 
 	os.Exit(-1)
@@ -86,7 +84,7 @@ func getContainerID(n int) string {
 	return string(res)
 }
 
-func recordContainerInfo(containerPID int, containerCmd []string, containerName string) (string, error) {
+func recordContainerInfo(containerPID int, containerCmd []string, containerName string, volume string) (string, error) {
 	pid := containerPID
 	id := getContainerID(10)
 	name := containerName
@@ -97,12 +95,13 @@ func recordContainerInfo(containerPID int, containerCmd []string, containerName 
 	}
 
 	containerInfo := &container.ContainerInfo{
-		Pid:        strconv.Itoa(pid),
+		Pid:         strconv.Itoa(pid),
 		Id:          id,
 		Name:        name,
 		Command:     cmd,
 		CreatedTime: createdTime,
 		Status:      container.RUNNING,
+		Volume:      volume,
 	}
 
 	// create json string
@@ -113,7 +112,7 @@ func recordContainerInfo(containerPID int, containerCmd []string, containerName 
 	}
 	// create path
 	dirPath := fmt.Sprintf(container.DefaultInfoLocation, name)
-	if err:= os.MkdirAll(dirPath, 0622); err != nil {
+	if err := os.MkdirAll(dirPath, 0622); err != nil {
 		logrus.Errorf("mkdir %s fails %v", dirPath, err)
 		return "", err
 	}
@@ -135,7 +134,7 @@ func recordContainerInfo(containerPID int, containerCmd []string, containerName 
 
 func deleteContainerInfo(containerName string) {
 	dirPath := fmt.Sprintf(container.DefaultInfoLocation, containerName)
-	if err:=os.RemoveAll(dirPath); err != nil {
+	if err := os.RemoveAll(dirPath); err != nil {
 		logrus.Errorf("delete container config %s fails %v", dirPath, err)
 	}
 }

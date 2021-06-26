@@ -24,4 +24,6 @@ func RemoveContainer(containerName string) {
 		logrus.Errorf("remove dir %s fails: %v", dirPath, err)
 		return
 	}
+
+	container.DeleteWorkspace(containerInfo.Volume, containerName)
 }
