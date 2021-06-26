@@ -8,6 +8,7 @@ import (
 	"github.com/oyishyi/docker/dockerCommands"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
+	"os"
 )
 
 // docker init, but cannot be used by user
@@ -32,28 +33,28 @@ var runCommand = cli.Command{
 		},
 		// detach
 		&cli.BoolFlag{
-			Name: "d",
+			Name:  "d",
 			Usage: "detach the container process",
 		},
 		// resource limit config
 		&cli.StringFlag{
-			Name: "m",
+			Name:  "m",
 			Usage: "limit the memory",
-		},&cli.StringFlag{
-			Name: "cpu",
+		}, &cli.StringFlag{
+			Name:  "cpu",
 			Usage: "limit the cpu amount",
-		},&cli.StringFlag{
-			Name: "cpushare",
+		}, &cli.StringFlag{
+			Name:  "cpushare",
 			Usage: "limit the cpu share",
 		},
 		// volume
 		&cli.StringFlag{
-			Name: "v",
+			Name:  "v",
 			Usage: "generate volume",
 		},
 		// name
 		&cli.StringFlag{
-			Name: "name",
+			Name:  "name",
 			Usage: "container name",
 		},
 	},
@@ -64,7 +65,7 @@ var runCommand = cli.Command{
 		}
 
 		// transfer from cli.Args to []string
-		containerCmd := make([]string, args.Len())        // command
+		containerCmd := make([]string, args.Len()) // command
 		for index, cmd := range args.Slice() {
 			containerCmd[index] = cmd
 		}
@@ -95,7 +96,7 @@ var runCommand = cli.Command{
 }
 
 var commitCommand = cli.Command{
-	Name: "commit",
+	Name:  "commit",
 	Usage: "commit the container into image",
 	Action: func(context *cli.Context) error {
 		args := context.Args()
@@ -109,7 +110,7 @@ var commitCommand = cli.Command{
 }
 
 var psCommand = cli.Command{
-	Name: "ps",
+	Name:  "ps",
 	Usage: "list all containers",
 	Action: func(context *cli.Context) error {
 		dockerCommands.ListContainers()
@@ -118,7 +119,7 @@ var psCommand = cli.Command{
 }
 
 var logCommand = cli.Command{
-	Name: "logs",
+	Name:  "logs",
 	Usage: "print logs of the container",
 	Action: func(context *cli.Context) error {
 		args := context.Args()
@@ -128,6 +129,33 @@ var logCommand = cli.Command{
 
 		containerName := args.Get(0)
 		dockerCommands.LogContainer(containerName)
+		return nil
+	},
+}
+
+var execCommand = cli.Command{
+	Name:  "exec",
+	Usage: "enter into a running container",
+	Action: func(context *cli.Context) error {
+
+		// won't execute on the first call
+		// execute when callback
+		if os.Getenv(dockerCommands.ENV_EXEC_PID) != "" {
+			logrus.Infof("exec pid %d", os.Getppid())
+			return nil
+		}
+
+		args := context.Args()
+		if args.Len() < 2 {
+			logrus.Errorf("exec what?")
+			return nil
+		}
+		containerName := args.Get(0)
+		containerCmd := make([]string, args.Len()-1)
+		for index, cmd := range args.Tail() {
+			containerCmd[index] = cmd
+		}
+		dockerCommands.ExecContainer(containerName, containerCmd)
 		return nil
 	},
 }

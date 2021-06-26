@@ -15,6 +15,7 @@ func main() {
 			&commitCommand,
 			&psCommand,
 			&logCommand,
+			&execCommand,
 		},
 	}
 
