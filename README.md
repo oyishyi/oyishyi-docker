@@ -1,14 +1,46 @@
 # oyishyi-docker
 
-## 1. How to use
+# 0. motivation
+This is a learning note of [《自己动手写 Docker》](https://github.com/xianlubird/mydocker).
 
-Linux: 
-```bash
-./docker run -it <command>
-```
-- e.g. ./docker run -it bash, not need to type /bin/bash, it will search the command path
-### 1.1 how to exit?
-- just type exit, or press ctrl+c
+# 1. blogs
+1. [使用 GoLang 从零开始写一个 Docker（概念篇）-- 《自己动手写 Docker》读书笔记](https://juejin.cn/post/6971335828060504094)
+2. [使用 GoLang 从零开始写一个 Docker（容器篇）-- 《自己动手写 Docker》读书笔记](https://juejin.cn/post/6973901434555203598)
+3. [使用 GoLang 从零开始写一个 Docker（镜像篇）-- 《自己动手写 Docker》读书笔记](https://juejin.cn/post/6976152015747596301)
+4. [使用 GoLang 从零开始写一个 Docker（容器进阶篇/完结篇？）-- 《自己动手写 Docker》读书笔记](https://juejin.cn/post/6978120651676581895)
 
-## 2. what it does?
-generate a busybox container from busybox image(download from docker hub)
+# 1. How to use
+As the official Docker, my docker can only be used on **Linux**. Because it need the feature of LXC. You can try to run on wsl(not tested although).
+
+In linux environment, just run the pre-build binary file: `./docker` as the official Docker.  
+
+# 2. Implemented commands
+These have exactly the same usages as official Docker.
+1. ./docker images
+2. ./docker ps
+3. ./docker run 
+    - --name
+    - presudo terminal or detach 
+      - -it
+      - -d
+    - volume
+      - -v
+    - resource limit
+      - -m
+      - -cpu
+      - cpushare
+4. ./docker commit
+5. ./docker logs
+6. ./docker exec
+7. ./docker stop
+8. ./docker rm
+
+# 3. how to use other images
+The first time you run `./docker images`, you will find only one image named busybox.   
+If you want to use other images, you need to follow the below step:
+1. have an installed official docker
+2. docker pull the image you want to use
+3. run an image as a container(using -d)
+4. docker export this container as a tar file
+5. move this tar file to the `runtime` folder.
+6. have fun
