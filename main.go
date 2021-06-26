@@ -18,6 +18,7 @@ func main() {
 			&execCommand,
 			&stopCommand,
 			&removeCommand,
+			&imagesCommand,
 		},
 	}
 

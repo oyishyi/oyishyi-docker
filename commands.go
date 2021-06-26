@@ -200,3 +200,12 @@ var removeCommand = cli.Command{
 		return nil
 	},
 }
+
+var imagesCommand = cli.Command{
+	Name: "images",
+	Usage: "show all images",
+	Action: func(context *cli.Context) error {
+		dockerCommands.GetImages()
+		return nil
+	},
+}
