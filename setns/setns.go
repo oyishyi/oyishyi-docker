@@ -15,7 +15,7 @@ __attribute__((constructor)) void enter_namespace(void) {
 	// get pid from env
 	mydocker_pid = getenv("mydocker_pid");
 	if (mydocker_pid) {
-		fprintf(stdout, "got env: mydocker_pid=%s\n", mydocker_pid);
+		//fprintf(stdout, "got env: mydocker_pid=%s\n", mydocker_pid);
 	} else {
 		// using env to control whether run this bunch of codes
 		// if env not exist, than this function will not run

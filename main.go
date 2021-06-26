@@ -16,6 +16,7 @@ func main() {
 			&psCommand,
 			&logCommand,
 			&execCommand,
+			&stopCommand,
 		},
 	}
 

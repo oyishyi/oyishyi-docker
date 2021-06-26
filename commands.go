@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/oyishyi/docker/cgroups/subsystems"
 	"github.com/oyishyi/docker/container"
@@ -61,7 +60,8 @@ var runCommand = cli.Command{
 	Action: func(context *cli.Context) error {
 		args := context.Args()
 		if args.Len() == 0 {
-			return errors.New("Run what?")
+			logrus.Error("Run what?")
+			return nil
 		}
 
 		// transfer from cli.Args to []string
@@ -101,7 +101,8 @@ var commitCommand = cli.Command{
 	Action: func(context *cli.Context) error {
 		args := context.Args()
 		if args.Len() == 0 {
-			return errors.New("Commit what?")
+			logrus.Error("Commit what?")
+			return nil
 		}
 		imageName := args.Get(0)
 		dockerCommands.CommitContainer(imageName)
@@ -124,7 +125,8 @@ var logCommand = cli.Command{
 	Action: func(context *cli.Context) error {
 		args := context.Args()
 		if args.Len() < 1 {
-			return errors.New("log what?")
+			logrus.Error("log what?")
+			return nil
 		}
 
 		containerName := args.Get(0)
@@ -147,7 +149,7 @@ var execCommand = cli.Command{
 
 		args := context.Args()
 		if args.Len() < 2 {
-			logrus.Errorf("exec what?")
+			logrus.Error("exec what?")
 			return nil
 		}
 		containerName := args.Get(0)
@@ -156,6 +158,21 @@ var execCommand = cli.Command{
 			containerCmd[index] = cmd
 		}
 		dockerCommands.ExecContainer(containerName, containerCmd)
+		return nil
+	},
+}
+
+var stopCommand = cli.Command{
+	Name: "stop",
+	Usage: "stop a container",
+	Action: func(context *cli.Context) error {
+		args := context.Args()
+		if args.Len() < 1 {
+			logrus.Errorf("stop what?")
+			return nil
+		}
+		containerName := args.Get(0)
+		dockerCommands.StopContainer(containerName)
 		return nil
 	},
 }
