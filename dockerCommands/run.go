@@ -57,8 +57,8 @@ func Run(tty bool, containerCmd []string, res *subsystems.ResourceConfig, volume
 		}
 		imagesRootURL := "./images/"
 		mntURL := "./mnt/"
-		container.DeleteWorkspace(imagesRootURL, mntURL, volume)
 		deleteContainerInfo(containerName)
+		container.DeleteWorkspace(imagesRootURL, mntURL, volume)
 	}
 
 	os.Exit(-1)

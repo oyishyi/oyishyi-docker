@@ -176,3 +176,18 @@ var stopCommand = cli.Command{
 		return nil
 	},
 }
+
+var removeCommand = cli.Command{
+	Name: "rm",
+	Usage: "delete a container",
+	Action: func(context *cli.Context) error {
+		args := context.Args()
+		if args.Len() < 1 {
+			logrus.Errorf("remove what?")
+			return nil
+		}
+		containerName := args.Get(0)
+		dockerCommands.RemoveContainer(containerName)
+		return nil
+	},
+}
