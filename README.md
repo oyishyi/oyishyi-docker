@@ -10,7 +10,7 @@ This is a learning note of [《自己动手写 Docker》](https://github.com/xia
 4. [使用 GoLang 从零开始写一个 Docker（容器进阶篇/完结篇？）-- 《自己动手写 Docker》读书笔记](https://juejin.cn/post/6978120651676581895)
 
 # 1. How to use
-As the official Docker, my docker can only be used on **Linux**. Because it need the features of LXC(and aufs). You can try to run it on wsl(not tested although).
+Similar with the official Docker, my docker can only be used on **Linux**. Because it need the features of LXC(and aufs). You can try to run it on wsl(not tested although).
 
 In linux environment, just run the pre-build binary file: `./docker`.  
 
